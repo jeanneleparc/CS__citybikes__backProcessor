@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/jeanneleparc/CS__citybikes__backProcessor/issues"
   },
-  "homepage": "https://github.com/jeanneleparc/CS__citybikes__backProcessor#readme"
+  "homepage": "https://github.com/jeanneleparc/CS__citybikes__backProcessor#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
 }
