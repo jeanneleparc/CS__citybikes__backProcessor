@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jeanneleparc/CS__citybikes__backProcessor#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "moment": "^2.29.1",
     "mongoose": "^6.0.12",
     "xhr2": "^0.2.1"
   },

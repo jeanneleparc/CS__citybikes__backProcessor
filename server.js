@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { MONGO_URI } = require('./config');
+const { MONGO_URI } = require('./../config');
 const app = express();
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
