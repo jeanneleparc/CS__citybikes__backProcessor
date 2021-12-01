@@ -1,5 +1,6 @@
 // Import contact model
-StatusStation = require('./status-station-model');
+StationStatus = require('./station-status-model');
+StationInformation = require('./station-information-model');
 moment = require('moment');
 
 // Quick wrapper function for making a GET call.
@@ -14,17 +15,12 @@ function get(url) {
     });
 }
 
-// Fetch feed data from NYC Citibike, if a callback is provided do it again every 1s asynchronously.
-async function get_feed(feedname) {
-    const url = `https://gbfs.citibikenyc.com/gbfs/en/${feedname}.json`;
-    // const {
-    //     data: {stations},
-    //     ttl,
-    // } = await get(url);
+// Fetch feed status information from NYC Citibike, if a callback is provided do it again every 1s asynchronously.
+async function get_feed_status() {
+    const url = `https://gbfs.citibikenyc.com/gbfs/en/station_status.json`;
     const rep = await get(url);
-    // console.log(rep);
 
-    var status = new StatusStation();
+    var status = new StationStatus();
     status.data = rep.data;
     status.last_updated = moment(rep.last_updated*1000).subtract(5, 'hours');
     status.ttl = rep.ttl;
@@ -32,9 +28,23 @@ async function get_feed(feedname) {
     status.save(function (err) {});
 }
 
+// Fetch feed station information from NYC Citibike, if a callback is provided do it again every 1s asynchronously.
+async function get_feed_information() {
+    const url = `https://gbfs.citibikenyc.com/gbfs/en/station_information.json`;
+    const rep = await get(url);
+
+    var information = new StationInformation();
+    information.data = rep.data;
+    information.last_updated = moment(rep.last_updated*1000).subtract(5, 'hours');
+    information.ttl = rep.ttl;
+
+    information.save(function (err) {});
+}
+
 
 async function main() {
-    get_feed("station_status");
+    get_feed_status();
+    get_feed_information();
 }
 
 module.exports = { main };

@@ -7,3 +7,5 @@ Run `npm init`, `npm install`. Ask us for the `config.js` file and place it at t
 ## Development server
 
 Run `npm run dev` for a dev server. Navigate to `http://localhost:5000/`.
+
+Fichier config à nous demander pour se connecter à la base de données.
