@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { MONGO_URI } = require('./../config');
+
 const app = express();
+
+
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -10,6 +13,7 @@ mongoose.connect(MONGO_URI, {
   .catch(err => console.log(err));
 
 const processor = require('./src/processor');
+
 processor.main();
 
 const PORT = process.env.PORT || 5000;
