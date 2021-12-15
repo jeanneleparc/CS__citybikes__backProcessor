@@ -14,7 +14,7 @@ async function main() {
                 throw error1;
             }
 
-            var queue = 'information';
+            var queue = 'status';
 
             channel.assertQueue(queue, {
                 durable: false
@@ -26,16 +26,26 @@ async function main() {
                 console.log(" [x] Received");
                 const stations = JSON.parse(msg.content).data.stations;
                 const time = JSON.parse(msg.content).last_updated;
-                stations.forEach((station) => {
-                    var information = new StationInformation();
-                    information.id = parseInt(station.station_id, 10);
-                    information.name = station.name;
-                    information.longitude = station.lon;
-                    information.latitude = station.lat;
-                    information.capacity = station.capacity;
-                    information.last_updated = moment(time*1000).subtract(5, 'hours');
-                    information.save(function (err) {});
-                });
+                // const status = await StationStatus.aggregate([{
+                //     $group : { _id: null, max: { $max : "$last_updated" }}
+                // }]).exec();
+
+                const agg = StationInformation.aggregate([{ $group: { _id: null, max: { $max : "$last_updated" }}}]);
+                for await (const doc of agg) {
+                    console.log(doc);
+                }
+                // stations.forEach((station) => {
+
+                //     var status = new StationStatus();
+
+                //     information.id = parseInt(station.station_id, 10);
+                //     information.name = station.name;
+                //     information.longitude = station.lon;
+                //     information.latitude = station.lat;
+                //     information.capacity = station.capacity;
+                //     information.last_updated = moment(time*1000).subtract(5, 'hours');
+                //     information.save(function (err) {});
+                // });
                 console.log("Save In DB");
             }, {
                 noAck: true
