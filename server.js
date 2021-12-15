@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/citibikes?retryWrites=true&w=majority';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://mongo:27017/citibikes';
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
