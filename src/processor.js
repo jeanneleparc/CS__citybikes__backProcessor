@@ -2,6 +2,7 @@
 StationStatus = require('./station-status-model');
 StationInformation = require('./station-information-model');
 moment = require('moment');
+var amqp = require('amqplib/callback_api');
 
 // Quick wrapper function for making a GET call.
 function get(url) {
@@ -43,8 +44,36 @@ async function get_feed_information() {
 
 
 async function main() {
-    get_feed_status();
-    get_feed_information();
+    // get_feed_status();
+    // get_feed_information();
+
+    amqp.connect('amqp://localhost', function(error0, connection) {
+        if (error0) {
+            throw error0;
+        }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
+
+            var queue = 'hello';
+
+            channel.assertQueue(queue, {
+                durable: false
+            });
+
+            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
+
+            channel.consume(queue, function(msg) {
+                console.log(" [x] Received %s", msg.content.toString());
+                console.log(JSON.parse(msg.content));
+                const stations = JSON.parse(msg.content).data.stations;
+                console.log(stations);
+            }, {
+                noAck: true
+            });
+        });
+    });
 }
 
 module.exports = { main };

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon receive"
+    "dev": "nodemon server",
+    "receive": "nodemon receive"
   },
   "repository": {
     "type": "git",
