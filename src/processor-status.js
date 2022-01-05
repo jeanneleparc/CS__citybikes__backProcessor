@@ -37,11 +37,13 @@ async function main() {
                     status.is_installed = station.is_installed;
                     status.last_updated = moment(time*1000).subtract(5, 'hours');
                     const info_station = informations.filter((data) => { return data.id == status.id});
-                    status.name = info_station[0].name;
-                    status.longitude = info_station[0].longitude;
-                    status.latitude = info_station[0].latitude;
-                    status.capacity = info_station[0].capacity;
-                    status.save(function (err) {});
+                    if( info_station.length != 0){
+                        status.name = info_station[0].name;
+                        status.longitude = info_station[0].longitude;
+                        status.latitude = info_station[0].latitude;
+                        status.capacity = info_station[0].capacity;
+                        status.save(function (err) {});
+                    }
                 });
                 console.log("Save In DB");
             }, {
