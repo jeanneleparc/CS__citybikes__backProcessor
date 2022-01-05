@@ -3,9 +3,10 @@ StationStatus = require('./station-status-model');
 StationInformation = require('./station-information-model');
 moment = require('moment');
 var amqp = require('amqplib/callback_api');
+const AMQP_URL = process.env.AMQP_URL || 'amqp://localhost';
 
 async function main() {
-    amqp.connect('amqp://localhost', function(error0, connection) {
+    amqp.connect(AMQP_URL, function(error0, connection) {
         if (error0) {
             throw error0;
         }
