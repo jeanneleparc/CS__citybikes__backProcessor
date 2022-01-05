@@ -42,12 +42,13 @@ async function get_feed_information() {
     information.save(function (err) {});
 }
 
+const AMQP_URL = process.env.AMQP_URL || 'amqp://localhost';
 
 async function main() {
     // get_feed_status();
     // get_feed_information();
 
-    amqp.connect('amqp://localhost', function(error0, connection) {
+    amqp.connect(AMQP_URL, function(error0, connection) {
         if (error0) {
             throw error0;
         }
@@ -65,10 +66,10 @@ async function main() {
             console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
             channel.consume(queue, function(msg) {
-                console.log(" [x] Received %s", msg.content.toString());
-                console.log(JSON.parse(msg.content));
+                console.log(" [x] Received");
+                // console.log(JSON.parse(msg.content));
                 const stations = JSON.parse(msg.content).data.stations;
-                console.log(stations);
+                // console.log(stations);
             }, {
                 noAck: true
             });
