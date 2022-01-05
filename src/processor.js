@@ -79,8 +79,8 @@ async function main() {
                             status.save(function (err) {});
                         }
                     })
-                };
-                console.log("Save status In DB");
+                    console.log("Save status In DB");
+                }
             }, {
                 noAck: true
             });
