@@ -12,7 +12,6 @@ mongoose.connect(MONGO_URI, {
   .catch(err => console.log(err));
 
 const processor = require('./src/processor');
-// const processor = require('./src/processor-status');
 
 processor.main();
 
