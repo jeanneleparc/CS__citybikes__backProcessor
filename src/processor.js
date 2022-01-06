@@ -7,23 +7,17 @@ const AMQP_URL = process.env.AMQP_URL || 'amqp://localhost';
 
 async function main() {
     amqp.connect(AMQP_URL, function(error0, connection) {
-        if (error0) {
-            throw error0;
-        }
+        if (error0) { throw error0; }
+
+        // listen the queue information and save information data in database
         connection.createChannel(function(error1, channel) {
-            if (error1) {
-                throw error1;
-            }
+            if (error1) { throw error1; }
+            
+            var queue_information = 'information';
+            channel.assertQueue(queue_information, { durable: false});
+            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue_information);
 
-            var queue = 'information';
-
-            channel.assertQueue(queue, {
-                durable: false
-            });
-
-            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
-
-            channel.consume(queue, function(msg) {
+            channel.consume(queue_information, function(msg) {
                 console.log(" [x] Received Information");
                 const stations = JSON.parse(msg.content).data.stations;
                 const time = JSON.parse(msg.content).last_updated;
@@ -42,25 +36,21 @@ async function main() {
                 noAck: true
             });
         });
+
+        // listen the queue status and save status data in database
         connection.createChannel(function(error1, channelbis) {
-            if (error1) {
-                throw error1;
-            }
+            if (error1) { throw error1; }
 
-            var queue = 'status';
+            var queue_status = 'status';
+            channelbis.assertQueue(queue_status, { durable: false });
+            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue_status);
 
-            channelbis.assertQueue(queue, {
-                durable: false
-            });
-
-            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
-
-            channelbis.consume(queue, async function(msg) {
+            channelbis.consume(queue_status, async function(msg) {
                 console.log(" [x] Received Status");
                 const stations = JSON.parse(msg.content).data.stations;
                 const time = JSON.parse(msg.content).last_updated;
                 const object_last_updated = await StationInformation.find({},{last_updated:1}).sort({'last_updated':-1}).limit(1);
-                if (object_last_updated.length != 0){
+                if (object_last_updated.length != 0) {
                     const informations = await StationInformation.find({last_updated: object_last_updated[0].last_updated},);
                     stations.forEach((station) => {
                         var status = new StationStatus();
@@ -78,9 +68,9 @@ async function main() {
                             status.capacity = info_station[0].capacity;
                             status.save(function (err) {});
                         }
-                    })
+                    });
                     console.log("Save status In DB");
-                }
+                };
             }, {
                 noAck: true
             });
