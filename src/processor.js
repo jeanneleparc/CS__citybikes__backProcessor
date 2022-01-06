@@ -28,6 +28,7 @@ async function main() {
                     information.longitude = station.lon;
                     information.latitude = station.lat;
                     information.capacity = station.capacity;
+                    information.has_kiosk = station.has_kiosk;
                     information.last_updated = moment(time*1000).subtract(5, 'hours');
                     information.save(function (err) {});
                 });
@@ -57,6 +58,9 @@ async function main() {
                         status.id = parseInt(station.station_id, 10);
                         status.num_docks_available = station.num_docks_available;
                         status.num_bikes_available = station.num_bikes_available;
+                        status.num_docks_disabled = station.num_docks_disabled;
+                        status.num_bikes_disabled = station.num_bikes_disabled;
+                        status.num_ebikes = station.num_ebikes_available;
                         status.station_status = station.station_status;
                         status.is_installed = station.is_installed;
                         status.last_updated = moment(time*1000).subtract(5, 'hours');

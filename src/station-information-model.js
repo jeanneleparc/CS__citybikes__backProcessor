@@ -2,11 +2,12 @@ var mongoose = require('mongoose');
 
 var stationInformationSchema = mongoose.Schema({
     id: Number,
-    name: String,
-    longitude: Number,
-    latitude: Number,
-    last_updated: Date,
     capacity: Number,
+    has_kiosk: Boolean,
+    last_updated: Date,
+    latitude: Number,
+    longitude: Number,
+    name: String,
 });
 
 var stationInformation = module.exports = mongoose.model('stationinformation', stationInformationSchema);
