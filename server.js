@@ -8,12 +8,12 @@ mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-  .then(() => console.log('MongoDB connected!'))
+  .then(() => console.log('MongoDB connected : %s', MONGO_URI))
   .catch(err => console.log(err));
 
 const processor = require('./src/processor');
 
 processor.main();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running at port ${PORT}`));

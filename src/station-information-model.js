@@ -1,12 +1,15 @@
 var mongoose = require('mongoose');
 
 var stationInformationSchema = mongoose.Schema({
-    data: Object,
+    id: Number,
+    name: String,
+    longitude: Number,
+    latitude: Number,
     last_updated: Date,
-    ttl: Number,
+    capacity: Number,
 });
 
-var stationInformation = module.exports = mongoose.model('station-information', stationInformationSchema);
+var stationInformation = module.exports = mongoose.model('stationinformation', stationInformationSchema);
 
 module.exports.get = function (callback, limit) {
     stationInformation.find(callback).limit(limit);
