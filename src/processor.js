@@ -70,7 +70,7 @@ async function main() {
                         }
                     });
                     console.log("Save status In DB");
-                };
+                }
             }, {
                 noAck: true
             });
