@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const XMLHttpRequest = require('xhr2');
-const { exists } = require('./src/stats-by-station-by-hours-model');
+const { exists } = require('./src/stats-by-station-by-hour-model');
 moment = require('moment');
 
-StatsByStationByHour = require('./src/stats-by-station-by-hours-model');
+StatsByStationByHour = require('./src/stats-by-station-by-hour-model');
 StationStatus = require('./src/station-status-model');
 StationInformation = require('./src/station-information-model');
 
