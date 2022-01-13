@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server"
+    "dev": "nodemon server",
+    "lint": "eslint ./",
+    "prettier": "eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,12 @@
     "xhr2": "^0.2.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.14"
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.14",
+    "prettier": "^2.5.1"
   }
 }
