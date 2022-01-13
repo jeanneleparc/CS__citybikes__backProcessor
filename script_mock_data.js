@@ -21,7 +21,9 @@ async function main() {
   const url = `https://gbfs.citibikenyc.com/gbfs/en/station_information.json`;
   const stationInformation = await get(url);
   const todayDate = moment().utc().subtract(5, "hours").startOf("day");
-  console.log(todayDate);
+  const nbStations = 50;
+	const nbDays = 30;
+	const nbTimeSlots = 23;
 
   try {
     await mongoose
@@ -32,11 +34,11 @@ async function main() {
       .then(() => console.log("MongoDB connected : %s", MONGO_URI))
       .catch((err) => console.log(err));
 
-    stationInformation.data.stations.slice(0, 51).forEach((station, index) => {
+    stationInformation.data.stations.slice(0, nbStations).forEach((station, index) => {
       const { capacity } = station;
-      for (let i = 30; i >= 0; i -= 1) {
+      for (let i = nbDays; i >= 0; i -= 1) {
         const currentMockDate = todayDate.clone().subtract(i, "days");
-        for (let j = 0; j <= 23; j += 1) {
+        for (let j = 0; j <= nbTimeSlots; j += 1) {
           const stat = new StatsByStationByHour();
           stat.station_id = parseInt(station.station_id, 10);
           stat.station_name = station.name;
@@ -49,10 +51,10 @@ async function main() {
           stat.date = currentMockDate;
           stat.save((err) => {
             if (err) return console.error(err);
-            if (index % 10 === 0 && i === 30 && j === 0) {
-              console.log(index, "/", 50);
+            if (((index+1) % 10 === 0 || (index+1)===nbStations) && i === nbDays && j === 0) {
+              console.log(index+1, "/", nbStations);
             }
-            if (index === 50 && i === 0 && j === 23) {
+            if ((index+1) === nbStations && i === 0 && j === nbTimeSlots) {
               process.exit(0);
             }
             return null;
