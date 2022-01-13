@@ -10,6 +10,9 @@
     "lint": "eslint ./",
     "prettier": "eslint . --fix"
   },
+  "gitHooks": {
+    "pre-push": "npm run prettier"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jeanneleparc/CS__citybikes__backProcessor.git"
@@ -34,6 +37,7 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "nodemon": "^2.0.14",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "yorkie": "^2.0.0"
   }
 }
