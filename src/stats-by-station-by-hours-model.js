@@ -11,7 +11,9 @@ var statsByStationByHourSchema = mongoose.Schema({
     date: Date,
 });
 
-var statsByStationByHour = module.exports = mongoose.model('statsbystationbyhour', statsByStationByHourSchema);
+var statsByStationByHour = mongoose.model('statsbystationbyhour', statsByStationByHourSchema);
+
+module.exports = statsByStationByHour;
 
 module.exports.get = function (callback, limit) {
     statsByStationByHour.find(callback).limit(limit);
