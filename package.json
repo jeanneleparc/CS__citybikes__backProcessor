@@ -28,6 +28,7 @@
     "express": "^4.17.1",
     "moment": "^2.29.1",
     "mongoose": "^6.0.12",
+    "node-cron": "^3.0.0",
     "xhr2": "^0.2.1"
   },
   "devDependencies": {
