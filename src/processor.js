@@ -98,6 +98,7 @@ async function main() {
                 status.longitude = infoStation[0].longitude;
                 status.latitude = infoStation[0].latitude;
                 status.capacity = infoStation[0].capacity;
+                status.has_kiosk = infoStation[0].has_kiosk;
                 status.save((err) => err);
               }
             });
