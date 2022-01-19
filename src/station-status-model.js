@@ -14,6 +14,7 @@ const stationStatusSchema = mongoose.Schema({
   station_status: String,
   is_installed: Boolean,
   last_updated: Date,
+  has_kiosk: Boolean,
 });
 
 const stationStatus = mongoose.model("stationstatus", stationStatusSchema);
