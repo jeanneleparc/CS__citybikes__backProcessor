@@ -13,14 +13,14 @@ async function main() {
   // Cron task to compute statistics
   cron.schedule("0 * * * *", async () => {
     const newYorkTime = moment().utc().tz("America/New_York");
-    const todayDateEnd = newYorkTime.startOf("hours");
-    const todayDateBegin = todayDateEnd.clone().subtract(1, "hour");
-    const timeSlot = parseInt(todayDateBegin.clone().format("HH"), 10);
-    const todayDateGlobal = todayDateBegin.clone().startOf("day");
+    const timeSlotEnd = newYorkTime.startOf("hours");
+    const timeSlotBegin = timeSlotEnd.clone().subtract(1, "hour");
+    const timeSlot = parseInt(timeSlotBegin.clone().format("HH"), 10);
+    const todayDateGlobal = timeSlotBegin.clone().startOf("day");
     let status;
     try {
       status = await StationStatus.find({
-        last_updated: { $gte: todayDateBegin, $lt: todayDateEnd },
+        last_updated: { $gte: timeSlotBegin, $lt: timeSlotEnd },
       });
     } finally {
       // List of id stations for which there is zero capacity at least once in an hour
