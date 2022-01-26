@@ -12,7 +12,8 @@ const AMQP_URL = process.env.AMQP_URL || "amqp://localhost";
 async function main() {
   // Cron task to compute statistics
   cron.schedule("0 * * * *", async () => {
-    const todayDateEnd = moment().utc().subtract(5, "hours").startOf("hours");
+    const newYorkTime = moment().utc().tz("America/New_York");
+    const todayDateEnd = newYorkTime.startOf("hours");
     const todayDateBegin = todayDateEnd.clone().subtract(1, "hour");
     const timeSlot = parseInt(todayDateBegin.clone().format("HH"), 10);
     const todayDateGlobal = todayDateBegin.clone().startOf("day");
@@ -99,7 +100,17 @@ async function main() {
             information.latitude = station.lat;
             information.capacity = station.capacity;
             information.has_kiosk = station.has_kiosk;
-            information.last_updated = moment(time * 1000).subtract(5, "hours");
+            // console.log(moment(time * 1000).tz('America/New_York'));
+            const dateTest = moment(time * 1000).utc();
+            console.log(dateTest.clone().subtract(5, "hours"));
+            console.log(dateTest.tz("America/New_York"));
+            console.log(
+              dateTest.clone().subtract(5, "hours") ===
+                dateTest.tz("America/New_York")
+            );
+            information.last_updated = moment(time * 1000)
+              .clone()
+              .tz("America/New_York");
             information.save((err) => err);
           });
           console.log("Save info In DB");
@@ -149,7 +160,9 @@ async function main() {
               status.num_ebikes = station.num_ebikes_available;
               status.station_status = station.station_status;
               status.is_installed = station.is_installed;
-              status.last_updated = moment(time * 1000).subtract(5, "hours");
+              status.last_updated = moment(time * 1000)
+                .utc()
+                .tz("America/New_York");
               const infoStation = informations.filter(
                 (data) => data.id === status.id
               );
