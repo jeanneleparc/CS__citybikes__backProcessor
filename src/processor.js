@@ -22,14 +22,18 @@ async function main() {
         last_updated: { $gte: todayDateBegin, $lt: todayDateEnd },
       });
     } finally {
-      const listWithoutCapacity = status.reduce((prev, curr) => {
+      // List of id stations for which there is zero capacity at least once in an hour
+      const listIdStationWithoutCapacity = status.reduce((prev, curr) => {
         if (curr.capacity === 0 && !prev.includes(curr.id)) {
           prev.push(curr.id);
         }
         return prev;
       }, []);
       const listStationIds = status.reduce((prev, curr) => {
-        if (!listWithoutCapacity.includes(curr.id) && !prev.includes(curr.id)) {
+        if (
+          !listIdStationWithoutCapacity.includes(curr.id) &&
+          !prev.includes(curr.id)
+        ) {
           prev.push(curr.id);
         }
         return prev;
