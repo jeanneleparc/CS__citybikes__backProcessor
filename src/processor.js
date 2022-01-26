@@ -12,14 +12,15 @@ const AMQP_URL = process.env.AMQP_URL || "amqp://localhost";
 async function main() {
   // Cron task to compute statistics
   cron.schedule("0 * * * *", async () => {
-    const todayDateEnd = moment().utc().subtract(5, "hours").startOf("hours");
-    const todayDateBegin = todayDateEnd.clone().subtract(1, "hour");
-    const timeSlot = parseInt(todayDateBegin.clone().format("HH"), 10);
-    const todayDateGlobal = todayDateBegin.clone().startOf("day");
+    const newYorkTime = moment().utc().tz("America/New_York");
+    const timeSlotEnd = newYorkTime.startOf("hours");
+    const timeSlotBegin = timeSlotEnd.clone().subtract(1, "hour");
+    const timeSlot = parseInt(timeSlotBegin.clone().format("HH"), 10);
+    const todayDateGlobal = timeSlotBegin.clone().startOf("day");
     let status;
     try {
       status = await StationStatus.find({
-        last_updated: { $gte: todayDateBegin, $lt: todayDateEnd },
+        last_updated: { $gte: timeSlotBegin, $lt: timeSlotEnd },
       });
     } finally {
       // List of id stations for which there is zero capacity at least once in an hour
@@ -99,7 +100,7 @@ async function main() {
             information.latitude = station.lat;
             information.capacity = station.capacity;
             information.has_kiosk = station.has_kiosk;
-            information.last_updated = moment(time * 1000).subtract(5, "hours");
+            information.last_updated = moment(time * 1000).utc();
             information.save((err) => err);
           });
           console.log("Save info In DB");
@@ -149,7 +150,7 @@ async function main() {
               status.num_ebikes = station.num_ebikes_available;
               status.station_status = station.station_status;
               status.is_installed = station.is_installed;
-              status.last_updated = moment(time * 1000).subtract(5, "hours");
+              status.last_updated = moment(time * 1000).utc();
               const infoStation = informations.filter(
                 (data) => data.id === status.id
               );
