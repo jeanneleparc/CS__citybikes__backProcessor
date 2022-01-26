@@ -100,17 +100,7 @@ async function main() {
             information.latitude = station.lat;
             information.capacity = station.capacity;
             information.has_kiosk = station.has_kiosk;
-            // console.log(moment(time * 1000).tz('America/New_York'));
-            const dateTest = moment(time * 1000).utc();
-            console.log(dateTest.clone().subtract(5, "hours"));
-            console.log(dateTest.tz("America/New_York"));
-            console.log(
-              dateTest.clone().subtract(5, "hours") ===
-                dateTest.tz("America/New_York")
-            );
-            information.last_updated = moment(time * 1000)
-              .clone()
-              .tz("America/New_York");
+            information.last_updated = moment(time * 1000).utc();
             information.save((err) => err);
           });
           console.log("Save info In DB");
@@ -160,9 +150,7 @@ async function main() {
               status.num_ebikes = station.num_ebikes_available;
               status.station_status = station.station_status;
               status.is_installed = station.is_installed;
-              status.last_updated = moment(time * 1000)
-                .utc()
-                .tz("America/New_York");
+              status.last_updated = moment(time * 1000).utc();
               const infoStation = informations.filter(
                 (data) => data.id === status.id
               );
