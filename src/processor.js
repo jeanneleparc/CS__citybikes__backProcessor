@@ -1,12 +1,72 @@
 // Import contact model
 const moment = require("moment");
 const amqp = require("amqplib/callback_api");
+const cron = require("node-cron");
+
 const StationStatus = require("./station-status-model");
 const StationInformation = require("./station-information-model");
+const StatsByStationByHour = require("./stats-by-station-by-hour-model");
 
 const AMQP_URL = process.env.AMQP_URL || "amqp://localhost";
 
 async function main() {
+  // Cron task to compute statistics
+  cron.schedule("0 * * * *", async () => {
+    const todayDateEnd = moment().utc().subtract(5, "hours").startOf("hours");
+    const todayDateBegin = todayDateEnd.clone().subtract(1, "hour");
+    const timeSlot = parseInt(todayDateBegin.clone().format("HH"), 10);
+    const todayDateGlobal = todayDateBegin.clone().startOf("day");
+    let status;
+    try {
+      status = await StationStatus.find({
+        last_updated: { $gte: todayDateBegin, $lt: todayDateEnd },
+      });
+    } finally {
+      // List of id stations for which there is zero capacity at least once in an hour
+      const listIdStationWithoutCapacity = status.reduce((prev, curr) => {
+        if (curr.capacity === 0 && !prev.includes(curr.id)) {
+          prev.push(curr.id);
+        }
+        return prev;
+      }, []);
+      const listStationIds = status.reduce((prev, curr) => {
+        if (
+          !listIdStationWithoutCapacity.includes(curr.id) &&
+          !prev.includes(curr.id)
+        ) {
+          prev.push(curr.id);
+        }
+        return prev;
+      }, []);
+      listStationIds.forEach((stationId, index) => {
+        const statusForStationId = status.filter((x) => x.id === stationId);
+        const stat = new StatsByStationByHour();
+        stat.station_id = stationId;
+        stat.station_name = statusForStationId[0].name;
+        stat.station_long = statusForStationId[0].longitude;
+        stat.station_lat = statusForStationId[0].latitude;
+        stat.time_slot = timeSlot;
+        const sum = statusForStationId.reduce(
+          (accumulator, currentValue) =>
+            accumulator + currentValue.num_bikes_available,
+          0
+        );
+        const avg = sum / statusForStationId.length;
+
+        stat.filling_rate = avg / statusForStationId[0].capacity;
+        stat.avg_bikes_nb = avg;
+        stat.date = todayDateGlobal;
+        stat.save((err) => {
+          if (err) return console.error(err);
+          if (index === listStationIds.length - 1) {
+            console.log("Analytics Computed and Saved");
+          }
+          return null;
+        });
+      });
+    }
+  });
+
   amqp.connect(AMQP_URL, (error0, connection) => {
     if (error0) {
       throw error0;
