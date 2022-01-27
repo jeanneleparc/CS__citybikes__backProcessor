@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const XMLHttpRequest = require("xhr2");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 const StatsByStationByHour = require("./src/stats-by-station-by-hour-model");
 
@@ -20,7 +20,7 @@ async function main() {
 
   const url = `https://gbfs.citibikenyc.com/gbfs/en/station_information.json`;
   const stationInformation = await get(url);
-  const todayDate = moment().utc().subtract(5, "hours").startOf("day");
+  const todayDate = moment().tz("America/New_York").startOf("day");
   const nbStations = 50;
   const nbDays = 30;
   const nbTimeSlots = 23;
