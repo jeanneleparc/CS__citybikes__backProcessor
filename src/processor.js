@@ -103,7 +103,12 @@ async function main() {
             information.last_updated = moment(time * 1000).utc();
             information.save((err) => err);
           });
-          console.log("Save info In DB");
+          console.log(
+            "Save info In DB, last updated : ",
+            moment(time * 1000)
+              .utc()
+              .format("MMMM Do YYYY, h:mm:ss a")
+          );
         },
         {
           noAck: true,
@@ -163,7 +168,12 @@ async function main() {
                 status.save((err) => err);
               }
             });
-            console.log("Save status In DB");
+            console.log(
+              "Save status In DB, last updated : ",
+              moment(time * 1000)
+                .utc()
+                .format("MMMM Do YYYY, h:mm:ss a")
+            );
           }
         },
         {
