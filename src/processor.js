@@ -182,6 +182,39 @@ async function main() {
       );
     });
   });
+
+  cron.schedule("0 8 * * *", async () => {
+    // every day at 6 am
+    // To clean data from station information
+    const objectLastUpdated = await StationInformation.find(
+      {},
+      { last_updated: 1 }
+    )
+      .sort({ last_updated: -1 })
+      .limit(1);
+    if (objectLastUpdated.length !== 0) {
+      try {
+        await StationInformation.deleteMany({
+          last_updated: { $ne: objectLastUpdated[0].last_updated },
+        });
+      } finally {
+        console.log(
+          `Information cleaned : ${moment()
+            .utc()
+            .format("MMMM Do YYYY, h:mm:ss a")}`
+        );
+      }
+    }
+    // To clean data from station status
+    const timeUTC = moment().utc().startOf("days");
+    try {
+      await StationStatus.deleteMany({ last_updated: { $lt: timeUTC } });
+    } finally {
+      console.log(
+        `Status cleaned : ${moment().utc().format("MMMM Do YYYY, h:mm:ss a")}`
+      );
+    }
+  });
 }
 
 module.exports = { main };
