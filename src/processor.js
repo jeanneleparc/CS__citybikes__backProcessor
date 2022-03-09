@@ -184,7 +184,7 @@ async function main() {
   });
 
   cron.schedule("0 8 * * *", async () => {
-    // every day at 6 am
+    // every day at 8 am
     // To clean data from station information
     const objectLastUpdated = await StationInformation.find(
       {},
