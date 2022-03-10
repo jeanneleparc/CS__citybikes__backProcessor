@@ -9,6 +9,7 @@ const StatsByStationByHour = require("./stats-by-station-by-hour-model");
 
 const AMQP_URL = process.env.AMQP_URL || "amqp://localhost";
 
+// eslint-disable-next-line no-unused-vars
 const cleanData = async () => {
   // To clean data from station information
   const objectLastUpdated = await StationInformation.find(
@@ -215,10 +216,10 @@ async function main() {
     });
   });
 
-  cron.schedule("* * * * *", async () => {
-    // every day at 8 am
-    cleanData();
-  });
+  // cron.schedule("0 *8 * * *", async () => {
+  //   // every day at 8 am
+  //   cleanData();
+  // });
 }
 
 module.exports = { main };
