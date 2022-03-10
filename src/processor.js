@@ -216,7 +216,7 @@ async function main() {
     });
   });
 
-  // cron.schedule("0 *8 * * *", async () => {
+  // cron.schedule("0 8 * * *", async () => {
   //   // every day at 8 am
   //   cleanData();
   // });
