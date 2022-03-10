@@ -9,6 +9,39 @@ const StatsByStationByHour = require("./stats-by-station-by-hour-model");
 
 const AMQP_URL = process.env.AMQP_URL || "amqp://localhost";
 
+// eslint-disable-next-line no-unused-vars
+const cleanData = async () => {
+  // To clean data from station information
+  const objectLastUpdated = await StationInformation.find(
+    {},
+    { last_updated: 1 }
+  )
+    .sort({ last_updated: -1 })
+    .limit(1);
+  if (objectLastUpdated.length !== 0) {
+    try {
+      await StationInformation.deleteMany({
+        last_updated: { $ne: objectLastUpdated[0].last_updated },
+      });
+    } finally {
+      console.log(
+        `Information cleaned : ${moment()
+          .utc()
+          .format("MMMM Do YYYY, h:mm:ss a")}`
+      );
+    }
+  }
+  // To clean data from station status
+  const timeUTC = moment().utc().startOf("days");
+  try {
+    await StationStatus.deleteMany({ last_updated: { $lt: timeUTC } });
+  } finally {
+    console.log(
+      `Status cleaned : ${moment().utc().format("MMMM Do YYYY, h:mm:ss a")}`
+    );
+  }
+};
+
 async function main() {
   // Cron task to compute statistics
   cron.schedule("0 * * * *", async () => {
@@ -182,6 +215,11 @@ async function main() {
       );
     });
   });
+
+  // cron.schedule("0 8 * * *", async () => {
+  //   // every day at 8 am
+  //   cleanData();
+  // });
 }
 
 module.exports = { main };
